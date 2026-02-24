@@ -1,0 +1,50 @@
+import { createContext, useContext, useState } from "react";
+import { authService } from "../services/authService";
+
+const AuthContext = createContext(null);
+
+export const Authprovider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const currentUser = authService.getCurrentUser();
+    if (currentUser) {
+      setUser(currentUser);
+    }
+    setLoading(false);
+  }, []); // mounting
+
+  const login = async (credentials) => {
+    const data = await authService.login(credentials);
+    setUser(data);
+    return data;
+  };
+  const register = async (credentials) => {
+    const data = await authService.register(userData);
+    return data;
+  };
+  const logout = async () => {
+    await authService.logout();
+    setUser(null);
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={props}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used withing an AuthProvider");
+  }
+  return context;
+};
