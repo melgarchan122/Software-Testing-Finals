@@ -1,31 +1,59 @@
-const API_URL = "http://localhost:3000/api/auth/";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const authService = {
   async login(credentials) {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
-        "content-Type": "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData), //Serialize
+      body: JSON.stringify(credentials),
     });
 
-    const data = await response.json(); //Promise
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Registration Failed");
+      throw new Error(data.message || "Login failed");
     }
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
     return data;
   },
-  async register(userData) {},
-  async logout() {
-    const response = await fetch(`${API_URL}/logout`, {
+
+  async register(userData) {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: {
-        "content-Type": "application/json",
-        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData), //Serialize
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Registration failed");
+    }
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
+    return data;
+  },
+
+  async logout() {
+    const response = await fetch(`${API_URL}/api/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.getToken()}`,
+      },
     });
 
     localStorage.removeItem("token");
@@ -36,14 +64,20 @@ export const authService = {
 
   getCurrentUser() {
     const userJson = localStorage.getItem("user");
-    if (userStr) {
-      return JSON.stringify(userJson);
+    if (userJson) {
+      try {
+        return JSON.parse(userJson);
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   },
+
   getToken() {
     return localStorage.getItem("token");
   },
+
   isAuthenticated() {
     return !!this.getToken();
   },

@@ -1,0 +1,134 @@
+/* Login.css - Uniform with SignUp */
+.Login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 20px;
+  margin: 0;
+}
+
+/* Target ang card-container ng Card component */
+.Login .card-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Target ang actual card */
+.Login .card-container .card {
+  background: #2a2a2a !important;
+  padding: 40px !important;
+  border-radius: 16px !important;
+  width: 100%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid #404040 !important;
+}
+
+/* Card title - "Welcome Back!" */
+.Login .card-container .card-title {
+  text-align: left;
+  color: #ffffff !important;
+  margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+/* Form styling */
+.Login-form {
+  width: 100%;
+}
+
+/* Input group */
+.Login .input-group {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+/* Labels */
+.Login .input-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Input fields */
+.Login .input-field {
+  width: 100%;
+  padding: 12px 0 !important;
+  border: none !important;
+  border-bottom: 2px solid #404040 !important;
+  font-size: 16px;
+  background-color: transparent !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease;
+  outline: none;
+  border-radius: 0 !important;
+}
+
+.Login .input-field:focus {
+  border-bottom-color: #4caf50 !important;
+  box-shadow: none !important;
+}
+
+.Login .input-field::placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Button */
+.Login .btn {
+  background: #4caf50 !important;
+  color: white !important;
+  padding: 14px !important;
+  border-radius: 4px !important;
+  border: none !important;
+  transition: background 0.3s !important;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 20px 0 20px !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  height: auto;
+}
+
+.Login .btn:hover {
+  background: #45a049 !important;
+}
+
+/* Sign up link section */
+.signup-link {
+  text-align: left;
+  color: #9ca3af;
+  font-size: 15px;
+  border-top: 1px solid #404040;
+  padding-top: 20px;
+  margin-top: 5px;
+}
+
+.signup-link a {
+  color: #e0e0e0 !important;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 5px;
+  transition: none;
+}
+
+.signup-link a:hover {
+  color: #e0e0e0 !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Error message */
+.Login .error-message {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 5px;
+}

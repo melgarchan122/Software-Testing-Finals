@@ -1,63 +1,44 @@
-import express from `express`;
-import dotenv from `dotenv`;
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
+
+// Connect to database
+connectDB();
+
 const app = express();
 const port = process.env.PORT || 3000;
-let data = []; 
 
+// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//routes
+// Routes
 app.get("/", (req, res) => {
-    res.send("Hello World");
+  res.json({ message: "Welcome to E-Commerce API" });
 });
 
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
-app.post("/login", (req, res) => {
-      const {username, password} = req.body; // destructing assignment JSON object
-   
-      // Basic validation
-    if (!username || !Password || !role){
-        return res.status(400).send("username, password and role fields are required"); // 400 Bad Request
-    }
-     
-    // Simulate user Authentication
-    const user = data.find(
-        (u) => u.username === username && u.password === password);
-       
-        // Log the registered users
-        if (user) { 
-        res.send(`User${user.name} logged in successfully`);
-    } else {
-        res.status(401).send("Invalid username or password"); //401 Unauthorized 
-    }
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal server error" });
 });
 
-app.post("/register", (req, res) => {
-    const { username, name, password,  role } = req.body;
-      
-    // Basic validation
-    if (!username || !Password || !role){
-        return res.status(400).send("username, password and role fields are required"); // 400 Bad Request
-    }
-   
-    // store user data in memory (for demonstration)
-    data.push({ username, name, password, role});
-
-    // Log the registered users
-    console.log("Registered Users:", data);
-
-    // Simulate user Registration
-    res.send(`User ${username}`)
-})
-
-app.post("/logout", (req, res) => {
-    // Simulate User logout
-    res.send("User Logged out successfully");
-
+// Start server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
-app.listen(port, () =>{
-    console.log(`server is running on port ${port} registered successfully`);
+app.listen(port, () => {
+  console.log(`server is running on port ${port} registered successfully`);
 });

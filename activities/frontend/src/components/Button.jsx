@@ -1,6 +1,6 @@
 import "../components/Button.css";
 
-const Button = ({ Children, loading, variant = "primary", ...props }) => {
+const Button = ({ children, loading, variant = "primary", ...props }) => {
   return (
     <button className={`btn btn-${variant}`} disabled={loading} {...props}>
       {loading ? (

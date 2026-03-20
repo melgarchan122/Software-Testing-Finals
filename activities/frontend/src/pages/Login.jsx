@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Card from "../components/Card";
-import "./login.css";
+import "./Login.css";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -17,51 +19,60 @@ export default function Login() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
+    setLoading(true);
 
     try {
       await login(formData);
-      console.log(user);
-      alert("login successful!(This is a mock implementation)");
-      console.log("Form Data;", formData);
+      navigate("/");
     } catch (err) {
-      setErrors({ error: err.message });
+      setErrors({ email: err.message });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Card title="Welcome Back!">
-      <form onSubmit={() => {}} className="Login-form">
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={errors.email}
-          placeholder="Enter your email"
-          required
-        />
-        <Input
-          label="Password"
-          type="Password"
-          name="Password"
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
-          placeholder="Enter your Password"
-          required
-        />
-        <Button type="submit" loading={false}>
-          Login
-        </Button>
-      </form>
-      <p className="signup-link">
-        Don't have an account? <a href="#">Sign up</a>
-      </p>
-    </Card>
+    <div className="login-page">
+      {" "}
+      {/* Pinalitan ko ng "login-page" */}
+      <Card title="Welcome Back!">
+        <form onSubmit={handleSubmit} className="Login-form">
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
+            placeholder="Enter your email"
+            required
+          />
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
+            placeholder="Enter your password"
+            required
+          />
+          <Button type="submit" loading={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+        </form>
+        <p className="signup-link">
+          Don't have an account? <Link to="/signup">Sign up now!</Link>
+        </p>
+      </Card>
+    </div>
   );
 }
