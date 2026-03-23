@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 function SignUp() {
   const [formData, setFormData] = useState({
     username: "",
@@ -9,6 +11,9 @@ function SignUp() {
     password: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,21 +21,67 @@ function SignUp() {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    navigate("/login");
+    setError("");
+    setSuccess("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Response:", data);
+
+      if (response.ok) {
+        setSuccess("Account created successfully! Redirecting to login...");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        setError(data.message || "Sign up failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("Network error. Please make sure the backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="signup-container">
       <div className="signup-form">
         <h2>Create Account</h2>
+
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+
         <form onSubmit={handleSubmit}>
-          {" "}
-          {/* FORM STARTS HERE */}
           <div className="form-group">
             <label>Username</label>
             <input
@@ -42,6 +93,7 @@ function SignUp() {
               required
             />
           </div>
+
           <div className="form-group">
             <label>Email</label>
             <input
@@ -49,10 +101,11 @@ function SignUp() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Please fill out this field."
+              placeholder="Enter your email"
               required
             />
           </div>
+
           <div className="form-group">
             <label>Password</label>
             <input
@@ -60,10 +113,11 @@ function SignUp() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your password"
+              placeholder="Enter your password (min. 6 characters)"
               required
             />
           </div>
+
           <div className="form-group">
             <label>Confirm Password</label>
             <input
@@ -75,11 +129,12 @@ function SignUp() {
               required
             />
           </div>
-          <button type="submit" className="signup-btn">
-            SIGN UP
+
+          <button type="submit" className="signup-btn" disabled={loading}>
+            {loading ? "SIGNING UP..." : "SIGN UP"}
           </button>
-        </form>{" "}
-        {/* FORM ENDS HERE */}
+        </form>
+
         <p className="login-link">
           Already have an account? <Link to="/login">Login</Link>
         </p>

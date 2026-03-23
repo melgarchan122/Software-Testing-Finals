@@ -27,7 +27,30 @@
   font-weight: 600;
 }
 
-/* FIXED: Bright white labels */
+/* Error and Success Messages */
+.error-message {
+  background: rgba(220, 53, 69, 0.15);
+  color: #ff6b6b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ff6b6b;
+}
+
+.success-message {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #4caf50;
+}
+
+/* Form Groups */
 .form-group {
   margin-bottom: 25px;
 }
@@ -35,7 +58,7 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #ffffff !important; /* BRIGHT WHITE */
+  color: #ffffff !important;
   font-weight: 600;
   font-size: 16px;
 }
@@ -80,6 +103,11 @@
 
 .signup-btn:hover {
   background: #45a049;
+}
+
+.signup-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* Login link */
